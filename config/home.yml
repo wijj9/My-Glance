@@ -1,0 +1,527 @@
+- name: Home
+  columns:
+    - size: small
+      widgets:
+        - type: calendar
+          first-day-of-week: monday
+
+        - type: custom-api
+          title: Next Race
+          cache: 1h
+          url: http://f1_api:4463/f1/next_race/
+          template: |
+            <div class="flex flex-column gap-10">
+              {{ $session := index (.JSON.Array "race") 0 }}
+              <p class="size-h5" style="font-size: 15px;">
+                {{ .JSON.String "season" }}, Round {{ .JSON.String "round" }}
+              </p>
+
+              <div class="margin-block-4">
+                <p class="color-highlight" style="font-size: 15px;">{{ $session.String "raceName" }}</p>
+
+                <div class="margin-block-10"></div>
+            
+                <img
+                    src="http://localhost:4463/f1/next_map/"
+                    onerror="this.style.display='none'"
+                    style="max-width: 100%; height: auto; border-radius: 8px; padding: 8px;"
+                    alt="Circuit Map"
+                  />
+                
+                <!--FP1 SCHEDULE-->
+                <p class="color-primary" style="font-size: 15px;">
+                  <span>Free Practice 1</span>
+                  {{ $fp1datetime := .JSON.String "race.0.schedule.fp1.datetime_rfc3339" }}
+                  {{ $parsedFP1Time := parseLocalTime "2006-01-02T15:04:05Z07:00" $fp1datetime }}
+                  {{ $now := now }}
+                  {{ if $parsedFP1Time.Before $now }}
+                    <span class="color-highlight">🏁</span>
+                  {{else}}
+                    <span
+                      class="color-highlight"
+                      {{ parseRelativeTime "rfc3339" $fp1datetime }}
+                    ></span>
+                  {{ end }}
+                </p>
+                {{ $fp1datetime := .JSON.String "race.0.schedule.fp1.datetime_rfc3339" }}
+                {{ $part := slice $fp1datetime 0 16 }}
+                {{ $fp1formatted := printf "%s %s" (slice $part 0 10) (slice $part 11 16) }}
+                <p class="size-h5" style="font-size: 13px;">
+                  {{ $fp1formatted }}
+                </p>
+
+                <!--SQ SCHEDULE-->
+                {{ if and (ne ($.JSON.String "race.0.schedule.sprintQualy.date") "null") (ne ($.JSON.String "race.0.schedule.sprintQualy.date") "") }}
+                  <p class="color-primary" style="font-size: 15px;">
+                    <span>Sprint Qualifying</span>
+                    {{ $sqdatetime := .JSON.String "race.0.schedule.sprintQualy.datetime_rfc3339" }}
+                    {{ $parsedSQTime := parseLocalTime "2006-01-02T15:04:05Z07:00" $sqdatetime }}
+                    {{ $now := now }}
+                    {{ if $parsedSQTime.Before $now }}
+                      <span class="color-highlight">🏁</span>
+                    {{else}}
+                      <span
+                        class="color-highlight"
+                        {{ parseRelativeTime "rfc3339" $sqdatetime }}
+                      ></span>
+                    {{ end }}
+                    </p>
+                    {{ $sqdatetime := .JSON.String "race.0.schedule.sprintQualy.datetime_rfc3339" }}
+                    {{ $part := slice $sqdatetime 0 16 }}
+                    {{ $sqformatted := printf "%s %s" (slice $part 0 10) (slice $part 11 16) }}
+                    <p class="size-h5" style="font-size: 13px;">
+                      {{ $sqformatted }}
+                    </p>
+                {{ end }}
+
+                <!--SR SCHEDULE-->
+                {{ if and (ne ($.JSON.String "race.0.schedule.sprintRace.date") "null") (ne ($.JSON.String "race.0.schedule.sprintRace.date") "") }}
+                  <p class="color-primary" style="font-size: 15px;">
+                    <span>Sprint Race</span>
+                    {{ $srdatetime := .JSON.String "race.0.schedule.sprintRace.datetime_rfc3339" }}
+                    {{ $parsedSRTime := parseLocalTime "2006-01-02T15:04:05Z07:00" $srdatetime }}
+                    {{ $now := now }}
+                    {{ if $parsedSRTime.Before $now }}
+                      <span class="color-highlight">🏁</span>
+                    {{else}}
+                      <span
+                        class="color-highlight"
+                        {{ parseRelativeTime "rfc3339" $srdatetime }}
+                      ></span>
+                    {{ end }}
+                    </p>
+                    {{ $srdatetime := .JSON.String "race.0.schedule.sprintRace.datetime_rfc3339" }}
+                    {{ $part := slice $srdatetime 0 16 }}
+                    {{ $srformatted := printf "%s %s" (slice $part 0 10) (slice $part 11 16) }}
+                    <p class="size-h5" style="font-size: 13px;">
+                      {{ $srformatted }}
+                    </p>
+                {{ end }}
+
+                <!--FP2 SCHEDULE-->
+                {{ if and (ne ($.JSON.String "race.0.schedule.fp2.date") "null") (ne ($.JSON.String "race.0.schedule.fp2.date") "") }}
+                  <p class="color-primary" style="font-size: 15px;">
+                    <span>Free Practice 2</span>
+                    {{ $fp2datetime := .JSON.String "race.0.schedule.fp2.datetime_rfc3339" }}
+                    {{ $parsedFP2Time := parseLocalTime "2006-01-02T15:04:05Z07:00" $fp2datetime }}
+                    {{ $now := now }}
+                    {{ if $parsedFP2Time.Before $now }}
+                      <span class="color-highlight">🏁</span>
+                    {{else}}
+                      <span
+                        class="color-highlight"
+                        {{ parseRelativeTime "rfc3339" $fp2datetime }}
+                      ></span>
+                    {{ end }}
+                    </p>
+                    {{ $fp2datetime := .JSON.String "race.0.schedule.fp2.datetime_rfc3339" }}
+                    {{ $part := slice $fp2datetime 0 16 }}
+                    {{ $fp2formatted := printf "%s %s" (slice $part 0 10) (slice $part 11 16) }}
+                    <p class="size-h5" style="font-size: 13px;">
+                      {{ $fp2formatted }}
+                    </p>
+                {{ end }}        
+                
+                <!--FP3 SCHEDULE-->
+                {{ if and (ne ($.JSON.String "race.0.schedule.fp3.date") "null") (ne ($.JSON.String "race.0.schedule.fp3.date") "") }}
+                  <p class="color-primary" style="font-size: 15px;">
+                    <span>Free Practice 3</span>
+                    {{ $fp3datetime := .JSON.String "race.0.schedule.fp3.datetime_rfc3339" }}
+                    {{ $parsedFP3Time := parseLocalTime "2006-01-02T15:04:05Z07:00" $fp3datetime }}
+                    {{ $now := now }}
+                    {{ if $parsedFP3Time.Before $now }}
+                      <span class="color-highlight">🏁</span>
+                    {{else}}
+                      <span
+                        class="color-highlight"
+                        {{ parseRelativeTime "rfc3339" $fp3datetime }}
+                      ></span>
+                    {{ end }}
+                    </p>
+                    {{ $fp3datetime := .JSON.String "race.0.schedule.fp3.datetime_rfc3339" }}
+                    {{ $part := slice $fp3datetime 0 16 }}
+                    {{ $fp3formatted := printf "%s %s" (slice $part 0 10) (slice $part 11 16) }}
+                    <p class="size-h5" style="font-size: 13px;">
+                      {{ $fp3formatted }}
+                    </p>
+                {{ end }}
+
+                <!--QUALY SCHEDULE-->
+                {{ if and (ne ($.JSON.String "race.0.schedule.qualy.date") "null") (ne ($.JSON.String "race.0.schedule.qualy.date") "") }}
+                  <p class="color-primary" style="font-size: 15px;">
+                    <span>Qualifying</span>
+                    {{ $qualydatetime := .JSON.String "race.0.schedule.qualy.datetime_rfc3339" }}
+                    {{ $parsedQUALYTime := parseLocalTime "2006-01-02T15:04:05Z07:00" $qualydatetime }}
+                    {{ $now := now }}
+                    {{ if $parsedQUALYTime.Before $now }}
+                      <span class="color-highlight">🏁</span>
+                    {{else}}
+                      <span
+                        class="color-highlight"
+                        {{ parseRelativeTime "rfc3339" $qualydatetime }}
+                      ></span>
+                    {{ end }}
+                    </p>
+                    {{ $qualydatetime := .JSON.String "race.0.schedule.qualy.datetime_rfc3339" }}
+                    {{ $part := slice $qualydatetime 0 16 }}
+                    {{ $qualyformatted := printf "%s %s" (slice $part 0 10) (slice $part 11 16) }}
+                    <p class="size-h5" style="font-size: 13px;">
+                      {{ $qualyformatted }}
+                    </p>
+                {{ end }}
+
+                <!--RACE SCHEDULE-->
+                {{ if and (ne ($.JSON.String "race.0.schedule.race.date") "null") (ne ($.JSON.String "race.0.schedule.race.date") "") }}
+                  <p class="color-primary" style="font-size: 15px;">
+                    <span>Race</span>
+                    {{ $racedatetime := .JSON.String "race.0.schedule.race.datetime_rfc3339" }}
+                    {{ $parsedRACEime := parseLocalTime "2006-01-02T15:04:05Z07:00" $racedatetime }}
+                    {{ $now := now }}
+                    {{ if $parsedRACEime.Before $now }}
+                      <span class="color-highlight">🏁</span>
+                    {{else}}
+                      <span
+                        class="color-highlight"
+                        {{ parseRelativeTime "rfc3339" $racedatetime }}
+                      ></span>
+                    {{ end }}
+                    </p>
+                    {{ $racedatetime := .JSON.String "race.0.schedule.race.datetime_rfc3339" }}
+                    {{ $part := slice $racedatetime 0 16 }}
+                    {{ $raceformatted := printf "%s %s" (slice $part 0 10) (slice $part 11 16) }}
+                    <p class="size-h5" style="font-size: 13px;">
+                      {{ $raceformatted }}
+                    </p>
+                {{ end }}
+
+                <div style="margin-block: 1.5rem;">
+                  <p class="color-highlight" style="font-size: 14px; margin-bottom: 8px;">
+                    Track Layout
+                  </p>
+                  
+                </div>
+
+                <p class="color-highlight" style="font-size: 14px;">
+                  Circuit Details
+                </p>
+                <p class="size-h6" style="font-size: 13px;">
+                  Name: {{ $session.String "circuit.circuitName" }}
+                </p>
+                <p class="size-h6" style="font-size: 13px;">
+                  Lap Record: {{ $session.String "circuit.lapRecord" }}, {{ $session.String "circuit.fastestLapDriverName" }} ({{ $session.String "circuit.fastestLapYear"}})
+                </p>
+                <p class="size-h6" style="font-size: 13px;">
+                  Length: {{ $session.String "laps" }} laps @ {{ $session.String "circuit.circuitLengthKm" }} KMs
+                </p>
+
+              </div>
+            </div>
+
+        - type: twitch-channels
+          channels:
+            - bigunit_42
+            - lisajfc
+            - xQc
+
+
+        
+        
+        
+
+        - type: rss
+          limit: 12
+          collapse-after: 4
+          cache: 12h
+          feeds:
+            - url: https://selfh.st/rss/
+              title: selfh.st
+            - url: https://medium.com/feed/tag/cpts
+              title: CPTS on Medium
+            - url: https://medium.com/feed/tag/pentesting
+              title: Pentesting
+            - url: https://medium.com/feed/tag/security
+              title: Security
+            - url: https://medium.com/feed/tag/seo
+              title: SEO
+            - url: https://medium.com/feed/tag/selfhosted
+              title: Selfhosted Tools
+            - url: https://medium.com/feed/tag/f1
+              title: F1
+
+
+
+        # Note: kick-channels is not a supported widget type in Glance
+        # Using bookmarks widget for Kick channels
+
+    
+    
+
+    - size: full
+      widgets:
+        - type: group
+          widgets:
+            - type: hacker-news
+            - type: lobsters
+
+        - type: videos
+          channels:
+            - UCwpHKudUkP5tNgmMdexB3ow # Mentour Pilot
+            - UCTbcSRduRJJTMaQhUVqywRw # Mentour Now
+            - UCxzC4EngIsMrPmbm6Nxvb-A # Scott Manley
+            - UCBJycsmduvYEL83R_U4JriQ # Marques Brownlee
+            - UCHnyfMqiRRG1u-2MsSQLbXA # Veritasium
+            - UCjRkTl_HP4zOh3UFaThgRZw # Sidemen Reacts
+            - UCh5mLn90vUaB1PbRRx_AiaA # More Sidemen
+            - UCODHrzPMGbNv67e84WDZhQQ # Fern
+          limit: 12 # Display first 12 videos
+
+        - type: group
+          widgets:
+            - type: reddit
+              subreddit: selfhosted
+              show-thumbnails: true
+            - type: reddit
+              subreddit: SideProject
+              show-thumbnails: true
+            - type: reddit
+              subreddit: piracy
+              show-thumbnails: true
+            - type: reddit
+              subreddit: hacking
+              show-thumbnails: true
+            - type: reddit
+              subreddit: formula1
+              show-thumbnails: true
+
+    - size: small
+      widgets:
+        - type: weather
+          location: Munich, Germany
+          units: metric
+          hour-format: 12h
+
+        - type: custom-api
+          title: Drivers Standings
+          cache: 5m
+          url: http://f1_api:4463/f1/drivers_standings/
+          template: |
+            <ul class="list collapsible-container" data-collapse-after="3">
+              {{ range $i, $v := .JSON.Array "drivers" }}
+              <li class="flex items-center {{ if eq $i 0 }}color-primary{{ else if eq $i 1 }}color-highlight{{ end }}">
+                <div class="grow min-width-0">
+                  <span>{{ .String "position" }}. {{ .String "surname" }} <img src="https://flagcdn.com/w20/{{ .String "flag" }}.png"
+                         alt=""
+                         style="width: 20px; height: 14px; object-fit: cover; vertical-align: middle"
+                         class="inline-block rounded-sm" /> </span>
+                  {{ $id := .String "teamId" }}
+                    <span class="size-h6">
+                      ( {{- if eq $id "red_bull" -}}Red Bull
+                      {{- else if eq $id "aston_martin" -}}Aston Martin
+                      {{- else if eq $id "mercedes" -}}Mercedes
+                      {{- else if eq $id "ferrari" -}}Ferrari
+                      {{- else if eq $id "mclaren" -}}McLaren
+                      {{- else if eq $id "williams" -}}Williams
+                      {{- else if eq $id "alpine" -}}Alpine
+                      {{- else if eq $id "haas" -}}Haas
+                      {{- else if eq $id "rb" -}}RB
+                      {{- else if eq $id "sauber" -}}Sauber
+                      {{- else -}}{{ $id }}{{- end -}})
+                    </span>
+                </div>
+                <span class="shrink-0 text-right">{{ .String "points" }}</span>
+              </li>
+              {{ end }}
+            </ul>
+
+        - type: custom-api
+          title: Constructors Standings
+          cache: 5m
+          url: http://f1_api:4463/f1/constructors_standings/
+          template: |
+            <ul class="list collapsible-container" data-collapse-after="5">
+              {{ range $i, $v := .JSON.Array "constructors" }}
+              <li class="flex items-center {{ if eq $i 0 }}color-primary{{ else if eq $i 1 }}color-highlight{{ end }}">
+                <span class="grow min-width-0">
+                  {{ .String "position" }}. {{ .String "team" }}<span style="margin-left: 2px;">
+                    <img src="https://flagcdn.com/w20/{{ .String "flag" }}.png"
+                         alt=""
+                         style="width: 20px; height: 14px; object-fit: cover; vertical-align: middle"
+                         class="inline-block rounded-sm" />
+                  </span>
+                </span>
+                <span class="shrink-0 text-right">{{ .String "points" }}</span>
+              </li>
+              {{ end }}
+            </ul>
+
+        - type: markets
+          markets:
+            - symbol: CSPX.L
+              name: S&P 500 ETF
+            - symbol: BTC-EUR
+              name: Bitcoin
+            - symbol: NVD.DE
+              name: NVIDIA
+            - symbol: APC.F
+              name: Apple
+            - symbol: MSF.F
+              name: Microsoft
+
+        - type: html
+          source: |
+            <div style="margin-bottom: 16px;">
+              <a href="https://kick.com/following" target="_blank" style="display: block; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 0.05em; color: #9ca3af; font-weight: 600; margin: 12px 0 8px 12px;">
+                Kick Channels
+              </a>
+              <div style="padding: 12px 16px; background-color: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px;">
+                <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px;">
+                  <li style="display: flex; align-items: center; gap: 12px;">
+                    <a href="https://kick.com/4head" target="_blank" style="display: block;">
+                      <img src="https://files.kick.com/images/user/2642629/profile_image/conversion/1bb2975e-6717-49a1-aa46-ca2a4b817463-fullsize.webp" alt="4head" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2.5px solid rgba(255,255,255,0.2); transition: opacity 0.3s ease;" onmouseover="this.style.opacity='0.6'" onmouseout="this.style.opacity='1'">
+                    </a>
+                    <div>
+                      <a href="https://kick.com/4head" target="_blank" style="font-weight: 600; text-decoration: none; color: #0ea5e9;">4head</a>
+                      <div style="font-size: 12px; color: #888;">Offline</div>
+                    </div>
+                  </li>
+                  <li style="display: flex; align-items: center; gap: 12px;">
+                    <a href="https://kick.com/52chains" target="_blank" style="display: block;">
+                      <img src="https://files.kick.com/images/user/103102/profile_image/conversion/0bbb673b-5ff4-4135-a4f5-96fd873a08c9-fullsize.webp" alt="52chains" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2.5px solid rgba(255,255,255,0.2); transition: opacity 0.3s ease;" onmouseover="this.style.opacity='0.6'" onmouseout="this.style.opacity='1'">
+                    </a>
+                    <div>
+                      <a href="https://kick.com/52chains" target="_blank" style="font-weight: 600; text-decoration: none; color: #22c55e;">52chains</a>
+                      <div style="font-size: 12px; color: #888;">Offline</div>
+                    </div>
+                  </li>
+                  <li style="display: flex; align-items: center; gap: 12px;">
+                    <a href="https://kick.com/xQc" target="_blank" style="display: block;">
+                      <img src="https://files.kick.com/images/user/676/profile_image/conversion/931b4e8f-5445-427c-bd82-b473530390cc-fullsize.webp" alt="xQc" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2.5px solid rgba(255,255,255,0.2); transition: opacity 0.3s ease;" onmouseover="this.style.opacity='0.6'" onmouseout="this.style.opacity='1'">
+                    </a>
+                    <div>
+                      <a href="https://kick.com/xQc" target="_blank" style="font-weight: 600; text-decoration: none; color: #38bdf8;">xQc</a>
+                      <div style="font-size: 12px; color: #888;">Offline</div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+
+
+- name: Projects
+  columns:
+    - size: full
+      widgets:
+        - type: html
+          source: |
+            <div style="padding: 20px;">
+              <h2 style="color: #ff3b30; margin-bottom: 20px; font-size: 18px;">Personal Projects</h2>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+
+                <a href="https://wajih.info" target="_blank" style="
+                  display: block;
+                  background: rgb(9, 10, 13);
+                  border: 1px solid rgba(255, 59, 48, 0.3);
+                  border-radius: 8px;
+                  padding: 16px;
+                  text-decoration: none;
+                  color: #f0f6fc;
+                  transition: all 0.3s ease;"
+                  onmouseover="this.style.background='rgb(16, 22, 36)'"
+                  onmouseout="this.style.background='rgb(9, 10, 13)'">
+                  <h3 style="margin: 0 0 8px 0; color: #ff3b30;">Portfolio</h3>
+                  <p style="margin: 0; font-size: 14px; color: #8b949e;">Personal portfolio website</p>
+                </a>
+
+                <a href="https://f1analytics.online" target="_blank" style="
+                  display: block;
+                  background: rgb(9, 10, 13);
+                  border: 1px solid rgba(255, 59, 48, 0.3);
+                  border-radius: 8px;
+                  padding: 16px;
+                  text-decoration: none;
+                  color: #f0f6fc;
+                  transition: all 0.3s ease;"
+                  onmouseover="this.style.background='rgb(16, 22, 36)'"
+                  onmouseout="this.style.background='rgb(9, 10, 13)'">
+                  <h3 style="margin: 0 0 8px 0; color: #ff3b30;">F1 Analytics</h3>
+                  <p style="margin: 0; font-size: 14px; color: #8b949e;">Formula 1 data analytics platform</p>
+                </a>
+
+                <a href="https://personal-finances-eight.vercel.app/" target="_blank" style="
+                  display: block;
+                  background: rgb(9, 10, 13);
+                  border: 1px solid rgba(255, 59, 48, 0.3);
+                  border-radius: 8px;
+                  padding: 16px;
+                  text-decoration: none;
+                  color: #f0f6fc;
+                  transition: all 0.3s ease;"
+                  onmouseover="this.style.background='rgb(16, 22, 36)'"
+                  onmouseout="this.style.background='rgb(9, 10, 13)'">
+                  <h3 style="margin: 0 0 8px 0; color: #ff3b30;">Personal Finances</h3>
+                  <p style="margin: 0; font-size: 14px; color: #8b949e;">Personal finance management tool</p>
+                </a>
+
+                <a href="https://terminal-beta-black.vercel.app/" target="_blank" style="
+                  display: block;
+                  background: rgb(9, 10, 13);
+                  border: 1px solid rgba(255, 59, 48, 0.3);
+                  border-radius: 8px;
+                  padding: 16px;
+                  text-decoration: none;
+                  color: #f0f6fc;
+                  transition: all 0.3s ease;"
+                  onmouseover="this.style.background='rgb(16, 22, 36)'"
+                  onmouseout="this.style.background='rgb(9, 10, 13)'">
+                  <h3 style="margin: 0 0 8px 0; color: #ff3b30;">Terminal Portfolio</h3>
+                  <p style="margin: 0; font-size: 14px; color: #8b949e;">Terminal-style portfolio interface</p>
+                </a>
+
+                <a href="https://my-toolkit-ecru.vercel.app/" target="_blank" style="
+                  display: block;
+                  background: rgb(9, 10, 13);
+                  border: 1px solid rgba(255, 59, 48, 0.3);
+                  border-radius: 8px;
+                  padding: 16px;
+                  text-decoration: none;
+                  color: #f0f6fc;
+                  transition: all 0.3s ease;"
+                  onmouseover="this.style.background='rgb(16, 22, 36)'"
+                  onmouseout="this.style.background='rgb(9, 10, 13)'">
+                  <h3 style="margin: 0 0 8px 0; color: #ff3b30;">My Toolkit</h3>
+                  <p style="margin: 0; font-size: 14px; color: #8b949e;">Collection of useful tools</p>
+                </a>
+
+                <a href="https://projects-dashboard-one.vercel.app/" target="_blank" style="
+                  display: block;
+                  background: rgb(9, 10, 13);
+                  border: 1px solid rgba(255, 59, 48, 0.3);
+                  border-radius: 8px;
+                  padding: 16px;
+                  text-decoration: none;
+                  color: #f0f6fc;
+                  transition: all 0.3s ease;"
+                  onmouseover="this.style.background='rgb(16, 22, 36)'"
+                  onmouseout="this.style.background='rgb(9, 10, 13)'">
+                  <h3 style="margin: 0 0 8px 0; color: #ff3b30;">Projects Dashboard</h3>
+                  <p style="margin: 0; font-size: 14px; color: #8b949e;">Project management dashboard</p>
+                </a>
+
+                <a href="https://dark-engine.vercel.app/" target="_blank" style="
+                  display: block;
+                  background: rgb(9, 10, 13);
+                  border: 1px solid rgba(255, 59, 48, 0.3);
+                  border-radius: 8px;
+                  padding: 16px;
+                  text-decoration: none;
+                  color: #f0f6fc;
+                  transition: all 0.3s ease;"
+                  onmouseover="this.style.background='rgb(16, 22, 36)'"
+                  onmouseout="this.style.background='rgb(9, 10, 13)'">
+                  <h3 style="margin: 0 0 8px 0; color: #ff3b30;">Dark Engine</h3>
+                  <p style="margin: 0; font-size: 14px; color: #8b949e;">Dark-themed web application</p>
+                </a>
+
+              </div>
+            </div>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/assets/user.css">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/assets/user.css" />
+              <option name="originalContent" value="&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/config/f1-constructors.yml">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/config/f1-constructors.yml" />
+              <option name="updatedContent" value="- type: custom-api&#10;  title: Constructors Standings&#10;  cache: 5m&#10;  url: http://localhost:4463/f1/constructors_standings/&#10;  template: |&#10;    &lt;ul class=&quot;list collapsible-container&quot; data-collapse-after=&quot;5&quot;&gt;&#10;      {{ range $i, $v := .JSON.Array &quot;constructors&quot; }}&#10;      &lt;li class=&quot;flex items-center {{ if eq $i 0 }}color-primary{{ else if eq $i 1 }}color-highlight{{ end }}&quot;&gt;&#10;        &lt;span class=&quot;grow min-width-0&quot;&gt;&#10;          {{ .String &quot;position&quot; }}. {{ .String &quot;team&quot; }}&lt;span style=&quot;margin-left: 2px;&quot;&gt;&#10;            &lt;img src=&quot;https://flagcdn.com/w20/{{ .String &quot;flag&quot; }}.png&quot;&#10;                 alt=&quot;&quot;&#10;                 style=&quot;width: 20px; height: 14px; object-fit: cover; vertical-align: middle&quot;&#10;                 class=&quot;inline-block rounded-sm&quot; /&gt;&#10;          &lt;/span&gt;&#10;        &lt;/span&gt;&#10;        &lt;span class=&quot;shrink-0 text-right&quot;&gt;{{ .String &quot;points&quot; }}&lt;/span&gt;&#10;      &lt;/li&gt;&#10;      {{ end }}&#10;    &lt;/ul&gt;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/config/f1-drivers.yml">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/config/f1-drivers.yml" />
+              <option name="updatedContent" value="- type: custom-api&#10;  title: Drivers Standings&#10;  cache: 5m&#10;  url: http://localhost:4463/f1/drivers_standings/&#10;  template: |&#10;    &lt;ul class=&quot;list collapsible-container&quot; data-collapse-after=&quot;3&quot;&gt;&#10;      {{ range $i, $v := .JSON.Array &quot;drivers&quot; }}&#10;      &lt;li class=&quot;flex items-center {{ if eq $i 0 }}color-primary{{ else if eq $i 1 }}color-highlight{{ end }}&quot;&gt;&#10;        &lt;div class=&quot;grow min-width-0&quot;&gt;&#10;          &lt;span&gt;{{ .String &quot;position&quot; }}. {{ .String &quot;surname&quot; }} &lt;img src=&quot;https://flagcdn.com/w20/{{ .String &quot;flag&quot; }}.png&quot;&#10;                 alt=&quot;&quot;&#10;                 style=&quot;width: 20px; height: 14px; object-fit: cover; vertical-align: middle&quot;&#10;                 class=&quot;inline-block rounded-sm&quot; /&gt; &lt;/span&gt;&#10;          {{ $id := .String &quot;teamId&quot; }}&#10;            &lt;span class=&quot;size-h6&quot;&gt;&#10;              ( {{- if eq $id &quot;red_bull&quot; -}}Red Bull&#10;              {{- else if eq $id &quot;aston_martin&quot; -}}Aston Martin&#10;              {{- else if eq $id &quot;mercedes&quot; -}}Mercedes&#10;              {{- else if eq $id &quot;ferrari&quot; -}}Ferrari&#10;              {{- else if eq $id &quot;mclaren&quot; -}}McLaren&#10;              {{- else if eq $id &quot;williams&quot; -}}Williams&#10;              {{- else if eq $id &quot;alpine&quot; -}}Alpine&#10;              {{- else if eq $id &quot;haas&quot; -}}Haas&#10;              {{- else if eq $id &quot;rb&quot; -}}RB&#10;              {{- else if eq $id &quot;sauber&quot; -}}Sauber&#10;              {{- else -}}{{ $id }}{{- end -}})&#10;            &lt;/span&gt;&#10;        &lt;/div&gt;&#10;        &lt;span class=&quot;shrink-0 text-right&quot;&gt;{{ .String &quot;points&quot; }}&lt;/span&gt;&#10;      &lt;/li&gt;&#10;      {{ end }}&#10;    &lt;/ul&gt;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/config/f1-next-race.yml">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/config/f1-next-race.yml" />
+              <option name="updatedContent" value="- type: custom-api&#10;  title: Next Race&#10;  cache: 5m&#10;  url: http://localhost:4463/f1/next_race/&#10;  template: |&#10;    &lt;div class=&quot;flex flex-column gap-10&quot;&gt;&#10;      {{ $session := index (.JSON.Array &quot;race&quot;) 0 }}&#10;      &lt;p class=&quot;size-h5&quot;&gt;&#10;        {{ .JSON.String &quot;season&quot; }}, Round {{ .JSON.String &quot;round&quot; }}&#10;      &lt;/p&gt;&#10;&#10;      &lt;div class=&quot;margin-block-4&quot;&gt;&#10;        &lt;p class=&quot;color-highlight&quot;&gt;{{ $session.String &quot;raceName&quot; }}&lt;/p&gt;&#10;        &lt;p class=&quot;color-primary&quot;&gt;&#10;          &lt;span&gt;&#10;            {{ .JSON.String &quot;next_event.session&quot; }}&#10;          &lt;/span&gt;&#10;          {{ $datetime := .JSON.String &quot;next_event.datetime&quot; }}&#10;          &lt;span&#10;            class=&quot;color-highlight&quot;&#10;            {{ parseRelativeTime &quot;rfc3339&quot; $datetime }}&#10;          &gt;&lt;/span&gt;&#10;        &lt;/p&gt;&#10;        &lt;p class=&quot;size-h5&quot;&gt;&#10;          {{ .JSON.String &quot;next_event.date&quot; }} @  {{ .JSON.String &quot;next_event.time&quot; }}&#10;        &lt;/p&gt;&#10;&#10;        &lt;div style=&quot;margin-block: 1rem;&quot;&gt;&#10;          &lt;img&#10;            src=&quot;http://localhost:4463/f1/next_map/&quot;&#10;            onerror=&quot;this.style.display='none'&quot;&#10;            style=&quot;max-width: 100%; height: auto; border-radius: 8px;&quot;&#10;          /&gt;&#10;        &lt;/div&gt;&#10;&#10;        &lt;p class=&quot;color-highlight&quot;&gt;&#10;          Circuit Details&#10;        &lt;/p&gt;&#10;        &lt;p class=&quot;size-h6&quot;&gt;&#10;          Name: {{ $session.String &quot;circuit.circuitName&quot; }}&#10;        &lt;/p&gt;&#10;        &lt;p class=&quot;size-h6&quot;&gt;&#10;          Lap Record: {{ $session.String &quot;circuit.lapRecord&quot; }}, {{ $session.String &quot;circuit.fastestLapDriverName&quot; }} ({{ $session.String &quot;circuit.fastestLapYear&quot;}})&#10;        &lt;/p&gt;&#10;        &lt;p class=&quot;size-h6&quot;&gt;&#10;          Length: {{ $session.String &quot;laps&quot; }} laps @ {{ $session.String &quot;circuit.circuitLengthKm&quot; }} KMs&#10;        &lt;/p&gt;&#10;      &lt;/div&gt;&#10;    &lt;/div&gt;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/config/glance.yml">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/config/glance.yml" />
+              <option name="originalContent" value="server:&#10;  assets-path: /app/assets&#10;&#10;theme:&#10;" />
+              <option name="updatedContent" value="server:&#10;  assets-path: /app/assets&#10;&#10;theme:&#10;  background-color: 220 13 9&#10;  contrast-multiplier: 1.2&#10;  primary-color: 11 100 59&#10;  positive-color: 134 61 37&#10;  negative-color: 11 100 59&#10;  # Note: assets are cached by the browser, changes to the CSS file&#10;  # will not be reflected until the browser cache is cleared (Ctrl+F5)&#10;  custom-css-file: /assets/user.css&#10;&#10;pages:&#10;  # It's not necessary to create a new file for each page and include it, you can simply&#10;  # put its contents here, though multiple pages are easier to manage when separated&#10;  - $include: home.yml" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/projects/projects-simple.html">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/projects/projects-simple.html" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
